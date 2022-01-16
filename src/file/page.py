@@ -3,13 +3,14 @@
 
 from PyByteBuffer import ByteBuffer
 import sys
+import inspect
 
 class Page:
     CHARSET = 'utf-8'
     def __init__(self, block):
         self._bb = None
         if type(block) is int:
-            self._bb = ByteBuffer.allcoate(blocksize)
+            self._bb = ByteBuffer.allocate(block)
         else:
             self._bb = ByteBuffer.wrap(block)
 
