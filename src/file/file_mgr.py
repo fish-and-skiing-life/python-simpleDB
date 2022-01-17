@@ -2,6 +2,7 @@ import os
 import inspect
 import threading
 import ctypes
+import copy
 
 from block_id import BlockId
 from page import Page
@@ -26,10 +27,9 @@ class FileMgr:
   def read(self, blk, page):
     with self._lock:
       try:
-        self._lock.acquire()
         f = self.getFile(blk.filename())
         f.seek(blk.number() * self._blocksize)
-        f.read( id((page.contents().copy())[0]))
+        f.read( id(page.contents()))
 
 
         f.close()
@@ -38,14 +38,13 @@ class FileMgr:
       except OSError as e:
         raise ("cannot read block " + blk)
 
-      self._lock.release()
-
   def write(self, block, page):
     with self._lock:
       try:
         f = self.getFile(blk.filename())
         f.seek(blk.number() * self._blocksize)
-        f.write(id((page.contents().copy())[0]))
+
+        f.write(hex(id(page.contents())))
         f.close()
       except OSError as e:
         raise ("cannot read block " + blk)
@@ -84,10 +83,10 @@ pos2 = pos1 + size;
 p1.set_int(pos2, 345);
 fm.write(blk, p1);
 print('after write')
-p2 = nPage(fm.blockSize());
+p2 = Page(fm.blockSize());
 fm.read(blk, p2);
-print("offset " + pos2 +  " contains " + p2.getInt(pos2));
-print("offset " + pos1 +  " contains " + p2.getString(pos1));
+print("offset " + str(pos2) +  " contains " + p2.get_int(pos2));
+print("offset " + str(pos1) +  " contains " + p2.get_string(pos1));
 
   # public synchronized void write(BlockId blk, Page p) {
   #   try {

@@ -44,6 +44,6 @@ class Page:
     def max_length(strlen):
         return sys.getsizeof(int) + (strlen * sys.getsizeof(str))
 
-    def contents():
-        bb.rewind()
+    def contents(self):
+        self._bb.rewind()
         return self._bb
