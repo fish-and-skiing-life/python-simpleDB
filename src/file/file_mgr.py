@@ -43,13 +43,27 @@ class FileMgr:
   def write(self, block, page):
     with self._lock:
       try:
-        self._lock.acquire()
         f = self.getFile(blk.filename())
         f.seek(blk.number() * self._blocksize)
         f.write(id((page.contents().copy())[0]))
         f.close()
       except OSError as e:
         raise ("cannot read block " + blk)
+
+
+  def append(self, filename):
+    with self._lock:
+      try:
+        newblknum = len(filename)
+        block = BlockId(filename, newblknum)
+        # 空のbite配列の作成
+        bytes_list = bytes(newblknum)
+        f = self.getFile(block.filename())
+        f.seek(block.number() * self._blocksize)
+        f.write(bytes_list)
+        f.close()
+      except OSError as e:
+        raise ("cannot append block " + filename)
 
       self._lock.release()
 
@@ -61,13 +75,15 @@ class FileMgr:
 
 
 fm = FileMgr('fileset', 400)
-a = BlockId('testfile', 2)
+blk = BlockId('testfile', 2)
 p1 = Page(fm.blockSize());
 pos1 = 88;
 p1.set_string(pos1, "abcdefghijklm");
-size = Page.max_length("abcdefghijklm".length());
-pos2 = pos1 + size;  p1.set_int(pos2, 345);
+size = Page.max_length(len("abcdefghijklm"))
+pos2 = pos1 + size;
+p1.set_int(pos2, 345);
 fm.write(blk, p1);
+print('after write')
 p2 = nPage(fm.blockSize());
 fm.read(blk, p2);
 print("offset " + pos2 +  " contains " + p2.getInt(pos2));

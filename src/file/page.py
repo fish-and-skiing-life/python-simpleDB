@@ -42,7 +42,7 @@ class Page:
 
     @staticmethod
     def max_length(strlen):
-        sys.getsizeof(int) + (strlen * sys.getsizeof(str))
+        return sys.getsizeof(int) + (strlen * sys.getsizeof(str))
 
     def contents():
         bb.rewind()
