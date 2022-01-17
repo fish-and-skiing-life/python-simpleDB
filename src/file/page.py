@@ -23,7 +23,7 @@ class Page:
     def get_bytes(self, offset):
         self._bb.position = offset
         length = self._bb.get()
-        # b = bytes(length)
+        b = bytes(length)
         self._bb.get(length)
         return b
 
