@@ -15,21 +15,21 @@ class Page:
             self._bb = ByteBuffer.wrap(block)
 
     def get_int(self, offset):
-        return self._bb.getInt(offset)
+        return self._bb.get(offset)
 
-    def set_int(self, obj):
-        self._bb.putInt(offset, n)
+    def set_int(self, offset, n):
+        self._bb.put(offset, n)
 
     def get_bytes(self, offset):
-        self._bb.position(offset)
-        length = self._bb.getInt()
-        b = bytes(length)
-        self._bb.get(b)
+        self._bb.position = offset
+        length = self._bb.get()
+        # b = bytes(length)
+        self._bb.get(length)
         return b
 
     def set_bytes(self, offset, b):
-        self._bb.position(offset)
-        self._bb.putInt(len(b))
+        self._bb.position = offset
+        self._bb.put(len(b))
         self._bb.put(b)
 
     def get_string(self, offset):
@@ -45,5 +45,5 @@ class Page:
         sys.getsizeof(int) + (strlen * sys.getsizeof(str))
 
     def contents():
-        bb.position(0)
+        bb.rewind()
         return self._bb
