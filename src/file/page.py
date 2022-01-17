@@ -15,7 +15,8 @@ class Page:
             self._bb = ByteBuffer.wrap(block)
 
     def get_int(self, offset):
-        return self._bb.get(offset)
+        self._bb.position = offset
+        return self._bb.get()
 
     def set_int(self, offset, n):
         self._bb.put(offset, n)
