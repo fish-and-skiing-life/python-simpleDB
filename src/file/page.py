@@ -23,7 +23,7 @@ class Page:
 
     def get_bytes(self, offset):
         self._bb.position = offset
-        print('4. ' + str(self._bb))
+        print('4. ' + str(self.bb_to_str()))
         length = self._bb.get()
         b = bytes(length)
         print(self._bb.get(length))
@@ -32,11 +32,11 @@ class Page:
     def set_bytes(self, offset, b):
         # self._bb._update_offsets(offset)
         self._bb.position = offset
-        print('1. ' +  str(self._bb))
+        print('1. ' +  str(self.bb_to_str()))
         self._bb.put(len(b))
-        print('2. ' +  str(self._bb))
+        print('2. ' +  str(self.bb_to_str()))
         self._bb.put(b)
-        print('3. ' +  str( self._bb))
+        print('3. ' +  str(self.bb_to_str()))
 
     def get_string(self, offset):
         b = self.get_bytes(offset)
@@ -45,7 +45,7 @@ class Page:
     def set_string(self, offset, s):
         b = s.encode(Page.CHARSET)
         self.set_bytes(offset, b)
-        print(self._bb)
+        print(self.bb_to_str())
 
     @staticmethod
     def max_length(strlen):
@@ -56,6 +56,10 @@ class Page:
         self._bb.rewind()
         return self._bb
 
+    def bb_to_str(self):
+        return '[ position: '+str(self._bb.position)+', remaining: '+str(self._bb.remaining)+', buffer: '+self._bb.buffer.decode()+' ]'
+
+
 if __name__ == '__main__':
     p1 = Page(400)
     pos1 = 88
@@ -64,11 +68,3 @@ if __name__ == '__main__':
     # size = Page.max_length(len("abcdefghijklm"))
     # pos2 = pos1 + size
     # p1.set_int(pos2, 345)
-
-'''
-これをByteBufferに書き込む
-
-def __str__(self):
-        return '[ position: '+str(self.position)+', remaining: '+str(self.remaining)+', buffer: '+self.buffer.decode()+' ]'
-
-'''
