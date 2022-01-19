@@ -8,8 +8,8 @@ from block_id import BlockId
 from page import Page
 class FileMgr:
   def __init__(self, dbDirectory, blocksize):
-    self._dbDirectory = dbDirectory;
-    self._blocksize = blocksize;
+    self._dbDirectory = dbDirectory
+    self._blocksize = blocksize
     self._isNew = not os.path.isdir(dbDirectory)
     self._lock = threading.Lock()
     if self._isNew:
@@ -75,17 +75,17 @@ class FileMgr:
 
 fm = FileMgr('fileset', 400)
 blk = BlockId('testfile', 2)
-p1 = Page(fm.blockSize());
-pos1 = 88;
-p1.set_string(pos1, "abcdefghijklm");
+p1 = Page(fm.blockSize())
+pos1 = 88
+p1.set_string(pos1, "abcdefghijklm")
 size = Page.max_length(len("abcdefghijklm"))
-pos2 = pos1 + size;
-p1.set_int(pos2, 345);
-fm.write(blk, p1);
+pos2 = pos1 + size
+p1.set_int(pos2, 345)
+fm.write(blk, p1)
 print('after write')
-p2 = Page(fm.blockSize());
+p2 = Page(fm.blockSize())
 fm.read(blk, p2);
-print("offset " + str(pos2) +  " contains " + p2.get_int(pos2));
+print("offset " + str(pos2) +  " contains " + str(p2.get_int(pos2)));
 print("offset " + str(pos1) +  " contains " + p2.get_string(pos1));
 
   # public synchronized void write(BlockId blk, Page p) {
