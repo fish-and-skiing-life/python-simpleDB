@@ -3,7 +3,7 @@
 
 from PyByteBuffer import ByteBuffer
 import sys
-import inspect
+import math
 
 class Page:
     CHARSET = 'us-ascii'
@@ -43,8 +43,9 @@ class Page:
 
     @staticmethod
     def max_length(strlen):
-        bytes_per_char = '-'.encode(Page.CHARSET)
-        return sys.getsizeof(int) + (strlen * sys.getsizeof(bytes_per_char))
+        # bytes_per_char = '-'.encode(Page.CHARSET)
+        # return sys.getsizeof(int) + (strlen * sys.getsizeof(bytes_per_char))
+        return Page.int_size(strlen) + strlen
 
     def contents(self):
         self._bb.rewind()
@@ -52,6 +53,16 @@ class Page:
 
     def bb_to_str(self):
         return '[ position: '+str(self._bb.position)+', remaining: '+str(self._bb.remaining)+', buffer: '+self._bb.buffer.decode()+' ]'
+
+    @staticmethod
+    def int_size(i):
+        """
+        return the number of bytes occupied by `i`
+        PyByteBuffer > utilsから取ってきた
+        """
+        if i == 0:
+            return 1
+        return int(math.log(i, 256)) + 1
 
 
 if __name__ == '__main__':
