@@ -44,7 +44,7 @@ class FileMgr:
       try:
         f = self.getFile(blk.filename())
         f.seek(blk.number() * self._blocksize)
-        f.write(hex(id(page.contents())))
+        f.write(page.contents())
         f.close()
       except OSError as e:
         raise ("cannot read block " + blk)
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
   # public synchronized void write(BlockId blk, Page p) {
   #   try {
-  #     RandomAccessFile f = getFile(blk.fileName());
+  #     RandomAccessFile f = getFile(blk.fileName()); 
   #     f.seek(blk.number() * blocksize);
   #     f.getChannel().write(p.contents());
   #   }

@@ -21,7 +21,6 @@ class Page:
     def set_int(self, offset, n):
         self._bb.position = offset
         self._bb.put(n)
-        print(self.bb_to_str())
 
     def get_bytes(self, offset):
         self._bb.position = offset
@@ -49,7 +48,7 @@ class Page:
 
     def contents(self):
         self._bb.rewind()
-        return self._bb
+        return bytes(self._bb.buffer).decode(Page.CHARSET)
 
     def bb_to_str(self):
         return '[ position: '+str(self._bb.position)+', remaining: '+str(self._bb.remaining)+', buffer: '+self._bb.buffer.decode()+' ]'
