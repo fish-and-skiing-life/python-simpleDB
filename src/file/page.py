@@ -16,27 +16,22 @@ class Page:
 
     def get_int(self, offset):
         self._bb.position = offset
-        return self._bb.get()
+        return self._bb.get(2)
 
     def set_int(self, offset, n):
-        self._bb.put(offset, n)
+        self._bb.position = offset
+        self._bb.put(n)
+        print(self.bb_to_str())
 
     def get_bytes(self, offset):
         self._bb.position = offset
-        print('4. ' + str(self.bb_to_str()))
         length = self._bb.get()
-        b = bytes(length)
-        print(self._bb.get(length))
-        return b
+        return self._bb.get(length).to_bytes(length, 'big')
 
     def set_bytes(self, offset, b):
-        # self._bb._update_offsets(offset)
         self._bb.position = offset
-        print('1. ' +  str(self.bb_to_str()))
         self._bb.put(len(b))
-        print('2. ' +  str(self.bb_to_str()))
         self._bb.put(b)
-        print('3. ' +  str(self.bb_to_str()))
 
     def get_string(self, offset):
         b = self.get_bytes(offset)
@@ -45,7 +40,6 @@ class Page:
     def set_string(self, offset, s):
         b = s.encode(Page.CHARSET)
         self.set_bytes(offset, b)
-        print(self.bb_to_str())
 
     @staticmethod
     def max_length(strlen):
@@ -65,6 +59,8 @@ if __name__ == '__main__':
     pos1 = 88
     p1.set_string(pos1, 'abcdefghijklmn')
     print(p1.get_string(88))
-    # size = Page.max_length(len("abcdefghijklm"))
-    # pos2 = pos1 + size
-    # p1.set_int(pos2, 345)
+    size = Page.max_length(len("abcdefghijklm"))
+    pos2 = pos1 + size
+    p1.set_int(pos2, 345)
+    print(p1.get_int(pos2))
+
