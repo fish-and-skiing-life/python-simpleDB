@@ -68,10 +68,10 @@ class FileMgr:
 
   def length(self, filename):
     try:
-       f = getFile(filename);
-       return int((f.length() / self._blocksize));
+       f = getFile(filename)
+       return int((f.length() / self._blocksize))
     except OSError as e:
-       raise ("cannot access " + filename);
+       raise ("cannot access " + filename)
 
   def inNew(self):
     return self._isNew
@@ -80,21 +80,21 @@ class FileMgr:
     return self._blocksize
 
 
-
-fm = FileMgr('fileset', 400)
-blk = BlockId('testfile', 2)
-p1 = Page(fm.blockSize())
-pos1 = 88
-p1.set_string(pos1, "abcdefghijklm")
-size = Page.max_length(len("abcdefghijklm"))
-pos2 = pos1 + size
-p1.set_int(pos2, 345)
-fm.write(blk, p1)
-print('after write')
-p2 = Page(fm.blockSize())
-fm.read(blk, p2);
-print("offset " + str(pos2) +  " contains " + str(p2.get_int(pos2)));
-print("offset " + str(pos1) +  " contains " + p2.get_string(pos1));
+if __name__ == '__main__':
+  fm = FileMgr('fileset', 400)
+  blk = BlockId('testfile', 2)
+  p1 = Page(fm.blockSize())
+  pos1 = 88
+  p1.set_string(pos1, "abcdefghijklm")
+  size = Page.max_length(len("abcdefghijklm"))
+  pos2 = pos1 + size
+  p1.set_int(pos2, 345)
+  fm.write(blk, p1)
+  print('after write')
+  p2 = Page(fm.blockSize())
+  fm.read(blk, p2)
+  print("offset " + str(pos2) +  " contains " + str(p2.get_int(pos2)))
+  print("offset " + str(pos1) +  " contains " + p2.get_string(pos1))
 
   # public synchronized void write(BlockId blk, Page p) {
   #   try {
