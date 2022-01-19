@@ -22,16 +22,17 @@ class FileMgr:
 
   def getFile(self, filename):
     file_path = os.path.join(self._dbDirectory, filename)
-    return open(file_path, "w+")
+    if not os.path.isfile(file_path):
+      return open(file_path, "w+")
+    else:
+      return open(file_path, "r+")
 
   def read(self, blk, page):
     with self._lock:
       try:
         f = self.getFile(blk.filename())
         f.seek(blk.number() * self._blocksize)
-        f.read( id(page.contents()))
-
-
+        print(f.read())
         f.close()
         # memset(&((*page.contents())[readCount]),  0, block_size_ - readCount);
 
@@ -43,7 +44,6 @@ class FileMgr:
       try:
         f = self.getFile(blk.filename())
         f.seek(blk.number() * self._blocksize)
-
         f.write(hex(id(page.contents())))
         f.close()
       except OSError as e:
@@ -53,7 +53,7 @@ class FileMgr:
   def append(self, filename):
     with self._lock:
       try:
-        newblknum = len(filename)
+        newblknum = self.length(filename)
         block = BlockId(filename, newblknum)
         # 空のbite配列の作成
         bytes_list = bytes(newblknum)
@@ -66,11 +66,19 @@ class FileMgr:
 
       self._lock.release()
 
+  def length(self, filename):
+    try:
+       f = getFile(filename);
+       return int((f.length() / self._blocksize));
+    except OSError as e:
+       raise ("cannot access " + filename);
+
   def inNew(self):
     return self._isNew
 
   def blockSize(self):
     return self._blocksize
+
 
 
 fm = FileMgr('fileset', 400)
