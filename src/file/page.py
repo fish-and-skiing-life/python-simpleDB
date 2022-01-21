@@ -48,7 +48,7 @@ class Page:
 
     def contents(self):
         self._bb.rewind()
-        return bytes(self._bb.buffer).decode(Page.CHARSET)
+        return self._bb.buffer
 
     def bb_to_str(self):
         return '[ position: '+str(self._bb.position)+', remaining: '+str(self._bb.remaining)+', buffer: '+self._bb.buffer.decode()+' ]'

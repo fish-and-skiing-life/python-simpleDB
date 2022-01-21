@@ -23,16 +23,16 @@ class FileMgr:
   def getFile(self, filename):
     file_path = os.path.join(self._dbDirectory, filename)
     if not os.path.isfile(file_path):
-      return open(file_path, "w+")
+      return open(file_path, "w+b")
     else:
-      return open(file_path, "r+")
+      return open(file_path, "r+b")
 
   def read(self, blk, page):
     with self._lock:
       try:
         f = self.getFile(blk.filename())
         f.seek(blk.number() * self._blocksize)
-        print(f.read())
+        page._bb.buffer = f.read()
         f.close()
         # memset(&((*page.contents())[readCount]),  0, block_size_ - readCount);
 
