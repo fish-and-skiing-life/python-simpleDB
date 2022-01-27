@@ -54,7 +54,6 @@ class LogMgr:
       self._flush();
       return self.LogIterator(self._fm, self._currentblk);
 
-
   def _flush(self):
     self._fm.write(self._currentblk, self._logpage);
     self._lastSavedLSN = self._latestLSN;
