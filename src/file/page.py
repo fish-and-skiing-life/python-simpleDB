@@ -7,6 +7,7 @@ import math
 
 class Page:
     CHARSET = 'us-ascii'
+    INT_SIZE = 4
     def __init__(self, block):
         self._bb = None
         if type(block) is int:
@@ -16,11 +17,11 @@ class Page:
 
     def get_int(self, offset):
         self._bb.position = offset
-        return self._bb.get(4)
+        return self._bb.get(Page.INT_SIZE)
 
     def set_int(self, offset, n):
         self._bb.position = offset
-        self._bb.put(n, 4)
+        self._bb.put(n, Page.INT_SIZE)
 
     def get_bytes(self, offset):
         self._bb.position = offset
