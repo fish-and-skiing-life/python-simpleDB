@@ -16,11 +16,11 @@ class Page:
 
     def get_int(self, offset):
         self._bb.position = offset
-        return self._bb.get(2)
+        return self._bb.get(4)
 
     def set_int(self, offset, n):
         self._bb.position = offset
-        self._bb.put(n)
+        self._bb.put(n, 4)
 
     def get_bytes(self, offset):
         self._bb.position = offset
@@ -51,7 +51,7 @@ class Page:
         return self._bb.buffer
 
     def bb_to_str(self):
-        return '[ position: '+str(self._bb.position)+', remaining: '+str(self._bb.remaining)+', buffer: '+self._bb.buffer.decode()+' ]'
+        return '[ position: '+str(self._bb.position)+', remaining: '+str(self._bb.remaining)+', buffer: '+self._bb.buffer.decode(Page.CHARSET)+' ]'
 
     @staticmethod
     def int_size(i):
@@ -67,10 +67,10 @@ class Page:
 if __name__ == '__main__':
     p1 = Page(400)
     pos1 = 88
-    p1.set_string(pos1, 'abcdefghijklmn')
+    p1.set_string(pos1, 'abcdefghijklmnopqrstuvwxyzzzzzzzzzzzzzzzzzz')
     print(p1.get_string(88))
-    size = Page.max_length(len("abcdefghijklm"))
+    size = Page.max_length(len("abcdefghijklmnopqrstuvwxyzzzzzzzzzzzzzzzzzz"))
     pos2 = pos1 + size
-    p1.set_int(pos2, 345)
+    p1.set_int(pos2, 2147483647)
     print(p1.get_int(pos2))
 
