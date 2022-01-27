@@ -15,13 +15,13 @@ class FileMgr:
     if self._is_new:
       os.mkdir(self.db_directory)
 
-    for filename in os.listdir(self.db_directory):
+    for filename in os.listdir(self._db_directory):
       if filename.startswith("temp"):
-        file_path = os.path.join(self.db_directory, filename)
+        file_path = os.path.join(self._db_directory, filename)
         os.remove(file_path)
 
   def get_file(self, filename):
-    file_path = os.path.join(self.db_directory, filename)
+    file_path = os.path.join(self._db_directory, filename)
     if not os.path.isfile(file_path):
       return open(file_path, "w+b")
     else:
