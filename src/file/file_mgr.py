@@ -7,21 +7,21 @@ import copy
 from block_id import BlockId
 from page import Page
 class FileMgr:
-  def __init__(self, dbDirectory, blocksize):
-    self._dbDirectory = dbDirectory
+  def __init__(self, db_directory, blocksize):
+    self._db_directory = db_directory
     self._blocksize = blocksize
-    self._isNew = not os.path.isdir(dbDirectory)
+    self._is_new = not os.path.isdir(db_directory)
     self._lock = threading.Lock()
-    if self._isNew:
-      os.mkdir(self._dbDirectory)
+    if self._is_new:
+      os.mkdir(self.db_directory)
 
-    for filename in os.listdir(self._dbDirectory):
+    for filename in os.listdir(self.db_directory):
       if filename.startswith("temp"):
-        file_path = os.path.join(self._dbDirectory, filename)
+        file_path = os.path.join(self.db_directory, filename)
         os.remove(file_path)
 
-  def getFile(self, filename):
-    file_path = os.path.join(self._dbDirectory, filename)
+  def get_file(self, filename):
+    file_path = os.path.join(self.db_directory, filename)
     if not os.path.isfile(file_path):
       return open(file_path, "w+b")
     else:
@@ -30,11 +30,10 @@ class FileMgr:
   def read(self, blk, page):
     with self._lock:
       try:
-        f = self.getFile(blk.filename())
+        f = self.get_file(blk.filename())
         f.seek(blk.number() * self._blocksize)
         page._bb.buffer = f.read()
         f.close()
-        # memset(&((*page.contents())[readCount]),  0, block_size_ - readCount);
 
       except OSError as e:
         raise ("cannot read block " + blk)
@@ -42,7 +41,7 @@ class FileMgr:
   def write(self, block, page):
     with self._lock:
       try:
-        f = self.getFile(blk.filename())
+        f = self.get_file(blk.filename())
         f.seek(blk.number() * self._blocksize)
         f.write(page.contents())
         f.close()
@@ -57,7 +56,7 @@ class FileMgr:
         block = BlockId(filename, newblknum)
         # 空のbite配列の作成
         bytes_list = bytes(newblknum)
-        f = self.getFile(block.filename())
+        f = self.get_file(block.filename())
         f.seek(block.number() * self._blocksize)
         f.write(bytes_list)
         f.close()
@@ -73,32 +72,31 @@ class FileMgr:
     except OSError as e:
        raise ("cannot access " + filename)
 
-  def inNew(self):
-    return self._isNew
+  def in_new(self):
+    return self._is_new
 
-  def blockSize(self):
+  def block_size(self):
     return self._blocksize
 
 
 if __name__ == '__main__':
   fm = FileMgr('fileset', 400)
   blk = BlockId('testfile', 2)
-  p1 = Page(fm.blockSize())
+  p1 = Page(fm.block_size())
   pos1 = 88
   p1.set_string(pos1, "abcdefghijklm")
   size = Page.max_length(len("abcdefghijklm"))
   pos2 = pos1 + size
   p1.set_int(pos2, 345)
   fm.write(blk, p1)
-  print('after write')
-  p2 = Page(fm.blockSize())
+  p2 = Page(fm.block_size())
   fm.read(blk, p2)
   print("offset " + str(pos2) +  " contains " + str(p2.get_int(pos2)))
   print("offset " + str(pos1) +  " contains " + p2.get_string(pos1))
 
   # public synchronized void write(BlockId blk, Page p) {
   #   try {
-  #     RandomAccessFile f = getFile(blk.fileName()); 
+  #     RandomAccessFile f = getFile(blk.fileName());
   #     f.seek(blk.number() * blocksize);
   #     f.getChannel().write(p.contents());
   #   }
