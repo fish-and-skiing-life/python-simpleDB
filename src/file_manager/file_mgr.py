@@ -13,7 +13,7 @@ class FileMgr:
     self._is_new = not os.path.isdir(db_directory)
     self._lock = threading.Lock()
     if self._is_new:
-      os.mkdir(self.db_directory)
+      os.mkdir(self._db_directory)
 
     for filename in os.listdir(self._db_directory):
       if filename.startswith("temp"):
@@ -67,7 +67,7 @@ class FileMgr:
 
   def length(self, filename):
     try:
-       f = getFile(filename)
+       f = self.get_file(filename)
        return int((f.length() / self._blocksize))
     except OSError as e:
        raise ("cannot access " + filename)

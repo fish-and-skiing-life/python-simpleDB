@@ -1,12 +1,11 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-from file.page import Page
-from file.block_id import BlockId
-from file.file_mgr import FileMgr
+import sys
+sys.path.append("../file_manager")
+from page import Page
+from block_id import BlockId
+from file_mgr import FileMgr
 
 class LogIterator:
-    def __init__(self, fm: FileMgr, blk: BlockID):
+    def __init__(self, fm: FileMgr, blk: BlockId):
         self._fm = fm
         self._blk = blk
         self._p = Page(fm.blockSize())
@@ -27,7 +26,7 @@ class LogIterator:
         rec = self._p.get_bytes(self._currentpos)
         self._currentpos += Page.INT_SIZE + len(rec)
 
-    def _move_to_block(self, block: blockID):
+    def _move_to_block(self, block: BlockId):
         fm.read(blk, self._p)
         self._boundary = p.get_int(0)
         self._currentpos = self._boundary

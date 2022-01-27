@@ -1,11 +1,14 @@
+import sys
+sys.path.append("../file_manager")
+
 from log_mgr import LogMgr
-from ./fileset/file_mgr import FileMgr
-from ./fileset/page import Page
+from file_mgr import FileMgr
+from page import Page
 
 class LogTest:
-  def __init__(self, args):
+  def __init__(self):
     fm = FileMgr('logtest', 400)
-    self.lm = LogMgr()
+    self.lm = LogMgr(fm, 'simpledb.log')
 
     self.print_log_records("The initial empty log file:")
     print("done");
@@ -30,7 +33,7 @@ class LogTest:
 
   def create_records(self, start, end):
     print('Creating records: ')
-    for i = start; i<end; i++:
+    for i in range(start, end):
       rec = self.create_log_record('record'+i, i+100)
       lsn = self.lm.append(rec)
       print(lsn + ' ')
