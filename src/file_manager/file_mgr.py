@@ -36,9 +36,10 @@ class FileMgr:
         f.close()
 
       except OSError as e:
-        raise ("cannot read block " + blk)
+        print ("cannot read block ")
+        print(e)
 
-  def write(self, block, page):
+  def write(self, blk, page):
     with self._lock:
       try:
         f = self.get_file(blk.filename())
@@ -46,7 +47,8 @@ class FileMgr:
         f.write(page.contents())
         f.close()
       except OSError as e:
-        raise ("cannot read block " + blk)
+        print ("cannot read block ")
+        print(e)
 
 
   def append(self, filename):
@@ -67,10 +69,10 @@ class FileMgr:
 
   def length(self, filename):
     try:
-       f = self.get_file(filename)
-       return int((f.length() / self._blocksize))
+      file_path = os.path.join(self._db_directory, filename)
+      return int((os.path.getsize(file_path) / self._blocksize))
     except OSError as e:
-       raise ("cannot access " + filename)
+      raise ("cannot access " + filename)
 
   def in_new(self):
     return self._is_new

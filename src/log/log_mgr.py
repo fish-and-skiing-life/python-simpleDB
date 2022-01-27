@@ -53,8 +53,8 @@ class LogMgr:
 
   def iterator(self):
     self._flush()
-    return self.LogIterator(self._fm, self._currentblk)
+    return LogIterator(self._fm, self._current_block)
 
   def _flush(self):
-    self._fm.write(self._currentblk, self._logpage)
+    self._fm.write(self._current_block, self._logpage)
     self._last_saved_lsn = self._latest_lsn

@@ -22,7 +22,7 @@ class LogTest:
     print(msg)
     iterator = self.lm.iterator()
     while iterator.has_next():
-      rec = iterator.next()
+      rec = next(iterator)
       p = Page(rec)
       s = p.get_string(0)
       npos = Page.max_length(s.length());
