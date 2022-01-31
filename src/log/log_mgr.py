@@ -18,8 +18,8 @@ class LogMgr:
     self._lock = threading.Lock()
 
     logsize = fm.length(logfile)
-    if self._logfile == 0:
-      self._current_block = append_new_block()
+    if logsize == 0:
+      self._current_block = self.append_new_block()
     else:
       self._current_block = BlockId(logfile, logsize - 1)
       fm.read(self._current_block, self._logpage)

@@ -31,12 +31,14 @@ class FileMgr:
     with self._lock:
       try:
         f = self.get_file(blk.filename())
+        print(blk.number())
+        print(self._blocksize)
         f.seek(blk.number() * self._blocksize)
         page._bb.buffer = f.read()
         f.close()
 
       except OSError as e:
-        print ("cannot read block ")
+        print ("cannot read block")
         print(e)
 
   def write(self, blk, page):
@@ -47,7 +49,7 @@ class FileMgr:
         f.write(page.contents())
         f.close()
       except OSError as e:
-        print ("cannot read block ")
+        print ("cannot write block ")
         print(e)
 
 
@@ -70,9 +72,13 @@ class FileMgr:
   def length(self, filename):
     try:
       file_path = os.path.join(self._db_directory, filename)
-      return int((os.path.getsize(file_path) / self._blocksize))
+      if not os.path.isfile(file_path):
+        return 0
+      else:
+        return int((os.path.getsize(file_path) / self._blocksize))
     except OSError as e:
-      raise ("cannot access " + filename)
+      print ("cannot length file ")
+      print(e)
 
   def in_new(self):
     return self._is_new
