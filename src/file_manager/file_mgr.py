@@ -27,11 +27,6 @@ class FileMgr:
       db_table = os.path.join(self._db_directory, filename)
       f = open(db_table, "w+b")
       self._open_files[filename] = f
-    # file_path = os.path.join(self._db_directory, filename)
-    # if not os.path.isfile(file_path):
-    #   return open(file_path, "w+b")
-    # else:
-    #   return open(file_path, "r+b")
     return f
 
   def read(self, blk, page):
@@ -67,6 +62,7 @@ class FileMgr:
         f.write(bytes_list)
       except OSError as e:
         raise ("cannot append block " + filename)
+    return block;
 
   def length(self, filename):
     try:
