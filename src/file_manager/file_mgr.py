@@ -12,6 +12,7 @@ class FileMgr:
     self._blocksize = blocksize
     self._is_new = not os.path.isdir(db_directory)
     self._lock = threading.Lock()
+    self._open_files = {}
     if self._is_new:
       os.mkdir(self._db_directory)
 
@@ -21,22 +22,24 @@ class FileMgr:
         os.remove(file_path)
 
   def get_file(self, filename):
-    file_path = os.path.join(self._db_directory, filename)
-    if not os.path.isfile(file_path):
-      return open(file_path, "w+b")
-    else:
-      return open(file_path, "r+b")
+    f = self._open_files.get(filename, None)
+    if f is None:
+      db_table = os.path.join(self._db_directory, filename)
+      f = open(db_table, "w+b")
+      self._open_files[filename] = f
+    # file_path = os.path.join(self._db_directory, filename)
+    # if not os.path.isfile(file_path):
+    #   return open(file_path, "w+b")
+    # else:
+    #   return open(file_path, "r+b")
+    return f
 
   def read(self, blk, page):
     with self._lock:
       try:
         f = self.get_file(blk.filename())
-        print(blk.number())
-        print(self._blocksize)
         f.seek(blk.number() * self._blocksize)
         page._bb.buffer = f.read()
-        f.close()
-
       except OSError as e:
         print ("cannot read block")
         print(e)
@@ -47,7 +50,6 @@ class FileMgr:
         f = self.get_file(blk.filename())
         f.seek(blk.number() * self._blocksize)
         f.write(page.contents())
-        f.close()
       except OSError as e:
         print ("cannot write block ")
         print(e)
@@ -63,11 +65,8 @@ class FileMgr:
         f = self.get_file(block.filename())
         f.seek(block.number() * self._blocksize)
         f.write(bytes_list)
-        f.close()
       except OSError as e:
         raise ("cannot append block " + filename)
-
-      self._lock.release()
 
   def length(self, filename):
     try:
