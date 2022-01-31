@@ -34,13 +34,13 @@ class LogTest:
   def create_records(self, start, end):
     print('Creating records: ')
     for i in range(start, end):
-      rec = self.create_log_record('record'+i, i+100)
+      rec = self.create_log_record('record'+str(i), i+100)
       lsn = self.lm.append(rec)
       print(lsn + ' ')
 
     print()
 
-  def create_log_record(s, n):
+  def create_log_record(self, s, n):
     spos = 0
     npos = spos + Page.max_length(s.length())
     b = bytearray(npos + Page.INT_SIZE)
