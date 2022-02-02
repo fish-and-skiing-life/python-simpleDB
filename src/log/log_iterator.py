@@ -22,9 +22,10 @@ class LogIterator:
     def __next__(self):
         if self._currentpos == self._fm.block_size():
             self._blk = BlockId(self._blk.filename(), self._blk.number()-1)
-            self._move_to_block(blk)
+            self._move_to_block(self._blk)
         rec = self._p.get_bytes(self._currentpos)
         self._currentpos += Page.INT_SIZE + len(rec)
+        return rec
 
     def _move_to_block(self, block: BlockId):
         self._fm.read(block, self._p)

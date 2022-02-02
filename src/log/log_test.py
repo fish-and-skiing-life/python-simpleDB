@@ -8,15 +8,15 @@ from page import Page
 class LogTest:
   def __init__(self):
     fm = FileMgr('logtest', 400)
-    self.lm = LogMgr(fm, 'simpledb.log')
+    self.lm = LogMgr(fm, 'temp.log')
 
     self.print_log_records("The initial empty log file:")
-    print("done");
-    self.create_records(1, 35);
-    self.print_log_records("The log file now has these records:");
-    self.create_records(36, 70);
-    self.lm.flush(65);
-    self.print_log_records("The log file now has these records:");
+    print("done")
+    self.create_records(1, 35)
+    self.print_log_records("The log file now has these records:")
+    self.create_records(36, 70)
+    self.lm.flush(65)
+    self.print_log_records("The log file now has these records:")
 
   def print_log_records(self, msg):
     print(msg)
@@ -25,7 +25,7 @@ class LogTest:
       rec = next(iterator)
       p = Page(rec)
       s = p.get_string(0)
-      npos = Page.max_length(s.length());
+      npos = Page.max_length(s.length())
       val = p.get_int(npos)
       print('[' + s + ',' + val + ']')
 
@@ -36,13 +36,13 @@ class LogTest:
     for i in range(start, end):
       rec = self.create_log_record('record'+str(i), i+100)
       lsn = self.lm.append(rec)
-      print(lsn + ' ')
+      print(str(lsn) + ' ')
 
     print()
 
   def create_log_record(self, s, n):
     spos = 0
-    npos = spos + Page.max_length(s.length())
+    npos = spos + Page.max_length(len(s))
     b = bytearray(npos + Page.INT_SIZE)
     p = Page(b)
     p.set_string(spos, s)

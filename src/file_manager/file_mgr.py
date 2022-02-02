@@ -25,7 +25,7 @@ class FileMgr:
     f = self._open_files.get(filename, None)
     if f is None:
       db_table = os.path.join(self._db_directory, filename)
-      f = open(db_table, "w+b")
+      f = open(db_table, "a+b")
       self._open_files[filename] = f
     return f
 
@@ -54,15 +54,16 @@ class FileMgr:
     with self._lock:
       try:
         newblknum = self.length(filename)
+        print(newblknum)
         block = BlockId(filename, newblknum)
         # 空のbite配列の作成
-        bytes_list = bytes(newblknum)
+        bytes_list = bytes(self._blocksize)
         f = self.get_file(block.filename())
         f.seek(block.number() * self._blocksize)
         f.write(bytes_list)
       except OSError as e:
         raise ("cannot append block " + filename)
-    return block;
+    return block
 
   def length(self, filename):
     try:
@@ -75,7 +76,7 @@ class FileMgr:
       print ("cannot length file ")
       print(e)
 
-  def in_new(self):
+  def is_new(self):
     return self._is_new
 
   def block_size(self):

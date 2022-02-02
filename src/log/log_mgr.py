@@ -26,16 +26,17 @@ class LogMgr:
 
   def flush(self, lsn):
     if lsn >= self._last_saved_lsn:
-       self._flush();
+       self._flush()
 
   def append(self, logrec):
     with self._lock:
       boundary = self._logpage.get_int(0)
-      recsize = logrec.length
+      recsize = len(logrec)
       bytesneeded = recsize + Page.INT_SIZE
+      print([boundary, self._logpage._bb.remaining])
       if boundary - bytesneeded < Page.INT_SIZE:
         self._flush()
-        currentblk = append_new_block();
+        currentblk = self.append_new_block()
         boundary = self._logpage.get_int(0)
 
       recpos = boundary - bytesneeded
@@ -48,8 +49,9 @@ class LogMgr:
   def append_new_block(self):
     blk = self._fm.append(self._logfile)
     self._logpage.set_int(0, self._fm.block_size())
-    self._fm.write(blk, self._logpage);
-    return blk;
+    self._fm.write(blk, self._logpage)
+
+    return blk
 
   def iterator(self):
     self._flush()
